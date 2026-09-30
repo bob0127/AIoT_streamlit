@@ -20,6 +20,7 @@ def init_db(db_path: str = DB_FILE) -> None:
     """
     Step 8 & 9: Initialize SQLite database and create TemperatureForecasts table.
     Ensures idempotency with UNIQUE(regionName, dataDate) ON CONFLICT REPLACE (Step 20).
+    Automatically migrates existing tables to add humidity, pop, rainfall, and pm25 columns.
     """
     with get_connection(db_path) as conn:
         cursor = conn.cursor()
@@ -31,10 +32,27 @@ def init_db(db_path: str = DB_FILE) -> None:
                 minT REAL NOT NULL,
                 maxT REAL NOT NULL,
                 weather TEXT DEFAULT '',
+                humidity REAL DEFAULT 70.0,
+                pop REAL DEFAULT 0.0,
+                rainfall REAL DEFAULT 0.0,
+                pm25 REAL DEFAULT 15.0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(regionName, dataDate) ON CONFLICT REPLACE
             );
         """)
+        
+        # Schema migration check: Add new columns if table existed without them
+        cursor.execute("PRAGMA table_info(TemperatureForecasts);")
+        existing_cols = [row["name"] for row in cursor.fetchall()]
+        if "humidity" not in existing_cols:
+            cursor.execute("ALTER TABLE TemperatureForecasts ADD COLUMN humidity REAL DEFAULT 70.0;")
+        if "pop" not in existing_cols:
+            cursor.execute("ALTER TABLE TemperatureForecasts ADD COLUMN pop REAL DEFAULT 0.0;")
+        if "rainfall" not in existing_cols:
+            cursor.execute("ALTER TABLE TemperatureForecasts ADD COLUMN rainfall REAL DEFAULT 0.0;")
+        if "pm25" not in existing_cols:
+            cursor.execute("ALTER TABLE TemperatureForecasts ADD COLUMN pm25 REAL DEFAULT 15.0;")
+
         conn.commit()
 
 def save_forecasts(records: List[Dict[str, Any]], db_path: str = DB_FILE) -> int:
@@ -43,19 +61,37 @@ def save_forecasts(records: List[Dict[str, Any]], db_path: str = DB_FILE) -> int
     Returns the number of records inserted/updated.
     """
     init_db(db_path)
+    clean_records = []
+    for r in records:
+        clean_records.append({
+            "regionName": r.get("regionName", ""),
+            "dataDate": r.get("dataDate", ""),
+            "minT": float(r.get("minT", 20.0)),
+            "maxT": float(r.get("maxT", 28.0)),
+            "weather": str(r.get("weather", "")),
+            "humidity": float(r.get("humidity", 70.0)),
+            "pop": float(r.get("pop", 0.0)),
+            "rainfall": float(r.get("rainfall", 0.0)),
+            "pm25": float(r.get("pm25", 15.0))
+        })
+
     with get_connection(db_path) as conn:
         cursor = conn.cursor()
         cursor.executemany("""
-            INSERT INTO TemperatureForecasts (regionName, dataDate, minT, maxT, weather)
-            VALUES (:regionName, :dataDate, :minT, :maxT, :weather)
+            INSERT INTO TemperatureForecasts (regionName, dataDate, minT, maxT, weather, humidity, pop, rainfall, pm25)
+            VALUES (:regionName, :dataDate, :minT, :maxT, :weather, :humidity, :pop, :rainfall, :pm25)
             ON CONFLICT(regionName, dataDate) DO UPDATE SET
                 minT = excluded.minT,
                 maxT = excluded.maxT,
                 weather = excluded.weather,
+                humidity = excluded.humidity,
+                pop = excluded.pop,
+                rainfall = excluded.rainfall,
+                pm25 = excluded.pm25,
                 created_at = CURRENT_TIMESTAMP;
-        """, records)
+        """, clean_records)
         conn.commit()
-        return len(records)
+        return len(clean_records)
 
 def query_distinct_regions(db_path: str = DB_FILE) -> List[str]:
     """
@@ -87,7 +123,7 @@ def query_forecast_by_region(region_name: str, db_path: str = DB_FILE) -> pd.Dat
     init_db(db_path)
     conn = get_connection(db_path)
     query = """
-        SELECT dataDate, minT, maxT, weather 
+        SELECT dataDate, minT, maxT, weather, humidity, pop, rainfall, pm25 
         FROM TemperatureForecasts 
         WHERE regionName = ? 
         ORDER BY dataDate ASC
@@ -103,7 +139,7 @@ def query_forecast_by_date(date_str: str, db_path: str = DB_FILE) -> pd.DataFram
     init_db(db_path)
     conn = get_connection(db_path)
     query = """
-        SELECT regionName, dataDate, minT, maxT, weather 
+        SELECT regionName, dataDate, minT, maxT, weather, humidity, pop, rainfall, pm25 
         FROM TemperatureForecasts 
         WHERE dataDate = ?
         ORDER BY regionName ASC
