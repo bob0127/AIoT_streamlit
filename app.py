@@ -146,6 +146,7 @@ st.markdown("""
         gap: 6px;
         font-size: 0.88rem;
         font-weight: 500;
+        color: #1e293b;
     }
     .legend-dot {
         width: 14px;
@@ -507,7 +508,7 @@ with tab_map:
     # Metric Switcher Bar
     st.markdown("""
     <div style="margin-bottom: 6px;">
-        <span style="font-weight: 700; color: #1e293b; font-size: 0.95rem;">🎯 選擇地圖熱力視覺化指標 (Map Metric Switcher)：</span>
+        <span style="font-weight: 700; color: #FFFFFF; font-size: 0.95rem;">🎯 選擇地圖熱力視覺化指標 (Map Metric Switcher)：</span>
     </div>
     """, unsafe_allow_html=True)
 
