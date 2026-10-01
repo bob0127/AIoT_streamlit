@@ -22,7 +22,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 DEFAULT_API_KEY = "CWA-55FDA6D3-A43C-4AE0-BB30-E62D5F684FB2"
 DATASET_ID_REGIONS = "F-C0032-003"       # 臺灣各縣市天氣預報資料及國際都市天氣預報-七天天氣預報XML資料檔
 DATASET_ID_CITIES = "F-D0047-091"        # 臺灣各鄉鎮市區預報資料-臺灣各鄉鎮市區未來3天(逐3小時)及未來1週天氣預報
-DATASET_ID_OBSERVATIONS = "O-A0001-001"  # 臺灣各自動氣象站氣象觀測資料 (全臺 876 測站實測觀測與極值歷史資料)
+DATASET_ID_OBSERVATIONS = "O-A0003-001"  # 臺灣各自動氣象站氣象觀測資料 (全臺 876 測站實測觀測與極值歷史資料)
 
 API_URL_REGIONS = f"https://opendata.cwa.gov.tw/fileapi/v1/opendataapi/{DATASET_ID_REGIONS}?downloadType=WEB&format=JSON"
 API_URL_CITIES = f"https://opendata.cwa.gov.tw/fileapi/v1/opendataapi/{DATASET_ID_CITIES}?downloadType=WEB&format=JSON"
