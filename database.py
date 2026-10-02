@@ -36,6 +36,7 @@ def init_db(db_path: str = DB_FILE) -> None:
                 pop REAL DEFAULT 0.0,
                 rainfall REAL DEFAULT 0.0,
                 pm25 REAL DEFAULT 15.0,
+                uvi REAL DEFAULT 0.0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(regionName, dataDate) ON CONFLICT REPLACE
             );
@@ -52,6 +53,8 @@ def init_db(db_path: str = DB_FILE) -> None:
             cursor.execute("ALTER TABLE TemperatureForecasts ADD COLUMN rainfall REAL DEFAULT 0.0;")
         if "pm25" not in existing_cols:
             cursor.execute("ALTER TABLE TemperatureForecasts ADD COLUMN pm25 REAL DEFAULT 15.0;")
+        if "uvi" not in existing_cols:
+            cursor.execute("ALTER TABLE TemperatureForecasts ADD COLUMN uvi REAL DEFAULT 0.0;")
 
         conn.commit()
 
@@ -72,14 +75,15 @@ def save_forecasts(records: List[Dict[str, Any]], db_path: str = DB_FILE) -> int
             "humidity": float(r.get("humidity", 70.0)),
             "pop": float(r.get("pop", 0.0)),
             "rainfall": float(r.get("rainfall", 0.0)),
-            "pm25": float(r.get("pm25", 15.0))
+            "pm25": float(r.get("pm25", 15.0)),
+            "uvi": float(r.get("uvi", 0.0))
         })
 
     with get_connection(db_path) as conn:
         cursor = conn.cursor()
         cursor.executemany("""
-            INSERT INTO TemperatureForecasts (regionName, dataDate, minT, maxT, weather, humidity, pop, rainfall, pm25)
-            VALUES (:regionName, :dataDate, :minT, :maxT, :weather, :humidity, :pop, :rainfall, :pm25)
+            INSERT INTO TemperatureForecasts (regionName, dataDate, minT, maxT, weather, humidity, pop, rainfall, pm25, uvi)
+            VALUES (:regionName, :dataDate, :minT, :maxT, :weather, :humidity, :pop, :rainfall, :pm25, :uvi)
             ON CONFLICT(regionName, dataDate) DO UPDATE SET
                 minT = excluded.minT,
                 maxT = excluded.maxT,
@@ -88,6 +92,7 @@ def save_forecasts(records: List[Dict[str, Any]], db_path: str = DB_FILE) -> int
                 pop = excluded.pop,
                 rainfall = excluded.rainfall,
                 pm25 = excluded.pm25,
+                uvi = excluded.uvi,
                 created_at = CURRENT_TIMESTAMP;
         """, clean_records)
         conn.commit()
@@ -123,7 +128,7 @@ def query_forecast_by_region(region_name: str, db_path: str = DB_FILE) -> pd.Dat
     init_db(db_path)
     conn = get_connection(db_path)
     query = """
-        SELECT dataDate, minT, maxT, weather, humidity, pop, rainfall, pm25 
+        SELECT dataDate, minT, maxT, weather, humidity, pop, rainfall, pm25, uvi 
         FROM TemperatureForecasts 
         WHERE regionName = ? 
         ORDER BY dataDate ASC
@@ -139,7 +144,7 @@ def query_forecast_by_date(date_str: str, db_path: str = DB_FILE) -> pd.DataFram
     init_db(db_path)
     conn = get_connection(db_path)
     query = """
-        SELECT regionName, dataDate, minT, maxT, weather, humidity, pop, rainfall, pm25 
+        SELECT regionName, dataDate, minT, maxT, weather, humidity, pop, rainfall, pm25, uvi 
         FROM TemperatureForecasts 
         WHERE dataDate = ?
         ORDER BY regionName ASC

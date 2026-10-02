@@ -201,13 +201,13 @@ with st.sidebar:
     
     st.markdown("**資料來源**: 中央氣象署 (CWA Open Data)")
     st.markdown("""
-    - 🛰️ **實測與歷史觀測**: `O-A0001-001` (全臺 876 自動氣象站)
-    - 🔮 **一週氣象預報**: `F-D0047-091` / `F-C0032-003` (22 縣市 + 9 大分區)
+    - 🛰️ **即時觀測 (含 UV)**: `O-A0003-001` (全臺自動氣象站)
+    - 🔮 **一週氣象預報**: `F-D0047-091` (22 縣市未來一週)
     """)
     
     sync_btn = st.button("🚀 立即向 CWA API 同步最新預報與觀測", use_container_width=True, type="primary")
     if sync_btn:
-        with st.spinner("正在向 CWA API 請求並解析最新資料 (含 O-A0001-001 實測與預報)..."):
+        with st.spinner("正在向 CWA API 請求並解析最新資料 (含 O-A0003-001 實測與紫外線指數)..."):
             try:
                 new_df = cwa.fetch_and_sync_weather()
                 st.success(f"同步成功！已儲存 {len(new_df)} 筆歷史實測與預報紀錄至 SQLite (data.db)")
@@ -259,9 +259,9 @@ with st.sidebar:
         
     def format_date_option(d_str: str) -> str:
         if d_str < today_str:
-            return f"📅 {d_str} (歷史實測 O-A0001-001)"
+            return f"📅 {d_str} (歷史實測 O-A0003-001)"
         elif d_str == today_str:
-            return f"📍 {d_str} (今日實測 O-A0001-001)"
+            return f"📍 {d_str} (今日實測 O-A0003-001)"
         else:
             return f"🔮 {d_str} (未來一週預報)"
 
@@ -290,12 +290,12 @@ st.markdown("""
         <span>🌤️</span> 台灣各縣市一週天氣預報互動儀表板
     </div>
     <div class="hero-subtitle">
-        全自動串接中央氣象署 Open Data API · 涵蓋全臺 22 縣市與分區 · 氣溫/濕度/PM2.5/降雨量/降雨機率多元圖層 · SQLite 結構化存儲
+        全自動串接中央氣象署 Open Data API · 涵蓋全臺 22 縣市與分區 · 氣溫/濕度/PM2.5/降雨量/降雨機率/紫外線指數多元圖層 · SQLite 結構化存儲
     </div>
     <div class="hero-tags">
         <span class="hero-badge">CWA API (F-D0047-091 & O-A0003-001)</span>
         <span class="hero-badge">全臺 22 縣市精準氣象</span>
-        <span class="hero-badge">5 大環境指標自由切換</span>
+        <span class="hero-badge">6 大環境指標自由切換</span>
         <span class="hero-badge">SQLite data.db</span>
         <span class="hero-badge">Folium 地圖視覺化</span>
         <span class="hero-badge">AI 創新實作專案</span>
@@ -414,6 +414,28 @@ METRICS_CONFIG = {
         "bottom_color": "#10b981",
         "format": lambda v: f"{int(round(v))} %",
         "marker_format": lambda v: f"{int(round(v))}%"
+    },
+    "uvi": {
+        "name": "紫外線指數",
+        "label": "☀️ 紫外線指數 (UVI)",
+        "unit": "",
+        "field": "uvi",
+        "icon": "☀️",
+        "description": "中央氣象署 O-A0003-001 即時紫外線指數觀測與天氣情境推估",
+        "legend_title": "☀️ 紫外線指數色階：",
+        "legend": [
+            {"color": "#10b981", "label": "低量 (0 ~ 2)"},
+            {"color": "#eab308", "label": "中量 (3 ~ 5)"},
+            {"color": "#f97316", "label": "高量 (6 ~ 7)"},
+            {"color": "#ef4444", "label": "過量 (8 ~ 10)"},
+            {"color": "#7c3aed", "label": "危險 (\u226511)"},
+        ],
+        "top_label": "☀️ 紫外線最強城市/地區",
+        "bottom_label": "🌙 紫外線最低城市/地區",
+        "top_color": "#ef4444",
+        "bottom_color": "#10b981",
+        "format": lambda v: f"{v:.1f}",
+        "marker_format": lambda v: f"UV {v:.0f}"
     }
 }
 
@@ -470,6 +492,17 @@ def get_metric_color(val: float, metric_key: str) -> str:
             return "#2563eb"
         else:
             return "#7c3aed"
+    elif metric_key == "uvi":
+        if val <= 2.0:
+            return "#10b981"
+        elif val <= 5.0:
+            return "#eab308"
+        elif val <= 7.0:
+            return "#f97316"
+        elif val <= 10.0:
+            return "#ef4444"
+        else:
+            return "#7c3aed"
     return "#3b82f6"
 
 def get_weather_emoji(wx: str) -> str:
@@ -501,9 +534,9 @@ tab_map, tab_chart, tab_table, tab_ai, tab_sql = st.tabs([
 with tab_map:
     mode_label = "全臺 22 縣市" if "22" in map_mode else ("9 大分區" if "9" in map_mode else "全視野")
     today_str = datetime.now().strftime("%Y-%m-%d")
-    date_type_tag = "【📅 歷史實測觀測 (O-A0001-001)】" if selected_date < today_str else ("【📍 今日實測觀測 (O-A0001-001)】" if selected_date == today_str else "【🔮 未來氣象預報】")
+    date_type_tag = "【📅 歷史實測觀測 (O-A0003-001)】" if selected_date < today_str else ("【📍 今日實測觀測 (O-A0003-001)】" if selected_date == today_str else "【🔮 未來氣象預報】")
     st.markdown(f"### 🗺️ 台灣氣象可視化地圖 — {date_type_tag} 檢視日期：`{selected_date}`（{mode_label}）")
-    st.caption("結合中央氣象署 O-A0001-001 實測觀測與 F-D0047-091 / F-C0032-003 預報資料，支援點選切換【氣溫】、【濕度】、【PM2.5】、【降雨量】與【降雨機率】五大指標熱力填色與數值呈現。")
+    st.caption("結合中央氣象署 O-A0003-001 即時觀測（含紫外線指數）與 F-D0047-091 預報資料，支援點選切換【氣溫】、【濕度】、【PM2.5】、【降雨量】、【降雨機率】與【紫外線指數】六大指標熱力填色與數值呈現。")
 
     # Metric Switcher Bar
     st.markdown("""
@@ -514,7 +547,7 @@ with tab_map:
 
     selected_metric_key = st.radio(
         "選擇地圖可視化熱力圖指標 (Select Metric):",
-        options=["temp", "humidity", "pm25", "rainfall", "pop"],
+        options=["temp", "humidity", "pm25", "rainfall", "pop", "uvi"],
         format_func=lambda k: METRICS_CONFIG[k]["label"],
         horizontal=True,
         index=0,
@@ -568,6 +601,7 @@ with tab_map:
             pop_v = float(row.get("pop", 10.0))
             rain_v = float(row.get("rainfall", 0.0))
             pm_v = float(row.get("pm25", 15.0))
+            uvi_v = float(row.get("uvi", 0.0))
             
             coord = city_coords.get(loc_name) or region_coords.get(loc_name)
             if not coord:
@@ -589,6 +623,7 @@ with tab_map:
                     "pop": pop_v,
                     "rainfall": rain_v,
                     "pm25": pm_v,
+                    "uvi": uvi_v,
                     "radius": 13
                 })
             elif (not is_city) and ("9" in map_mode or "全視野" in map_mode):
@@ -606,6 +641,7 @@ with tab_map:
                     "pop": pop_v,
                     "rainfall": rain_v,
                     "pm25": pm_v,
+                    "uvi": uvi_v,
                     "radius": 20
                 })
                     
@@ -629,6 +665,7 @@ with tab_map:
                         "pop": float(row.get("pop", 10.0)),
                         "rainfall": float(row.get("rainfall", 0.0)),
                         "pm25": float(row.get("pm25", 15.0)),
+                        "uvi": float(row.get("uvi", 0.0)),
                         "radius": 14
                     })
 
@@ -644,6 +681,7 @@ with tab_map:
             pop_v = item["pop"]
             rain_v = item["rainfall"]
             pm_v = item["pm25"]
+            uvi_v = item.get("uvi", 0.0)
 
             # Current active metric values
             active_val = item[current_cfg["field"]]
@@ -656,6 +694,7 @@ with tab_map:
             pm_color = get_metric_color(pm_v, "pm25")
             r_color = get_metric_color(rain_v, "rainfall")
             p_color = get_metric_color(pop_v, "pop")
+            uvi_color = get_metric_color(uvi_v, "uvi")
 
             emoji = get_weather_emoji(wx)
             area_badge = item["area"]
@@ -687,6 +726,9 @@ with tab_map:
                     </div>
                     <div style="{get_hl_style(selected_metric_key == 'pop')}">
                         ☔ <b>降雨機率</b>: <span style="color: {p_color}; font-weight:800;">{int(round(pop_v))}%</span>
+                    </div>
+                    <div style="{get_hl_style(selected_metric_key == 'uvi')}">
+                        ☀️ <b>紫外線指數</b>: <span style="color: {uvi_color}; font-weight:800;">UVI {uvi_v}</span>
                     </div>
                 </div>
             </div>
@@ -780,7 +822,7 @@ with tab_map:
 # ==============================================================================
 with tab_chart:
     st.markdown(f"### 📈 【{selected_region}】歷史實測與未來氣象走勢分析")
-    st.caption("無縫整合中央氣象署 O-A0001-001 歷史實測觀測與未來預報，自由切換氣溫、濕度、PM2.5、降雨量與降雨機率連續趨勢。")
+    st.caption("無縫整合中央氣象署 O-A0003-001 即時觀測與未來預報，自由切換氣溫、濕度、PM2.5、降雨量、降雨機率與紫外線指數連續趨勢。")
 
     # Query region forecast from SQLite (Step 12)
     df_region = db.query_forecast_by_region(selected_region)
@@ -793,6 +835,7 @@ with tab_chart:
         avg_week_pm25 = round(df_region["pm25"].mean(), 1) if "pm25" in df_region else 18.0
         max_week_rain = round(df_region["rainfall"].max(), 1) if "rainfall" in df_region else 0.0
         max_week_pop = int(round(df_region["pop"].max())) if "pop" in df_region else 20
+        max_week_uvi = round(df_region["uvi"].max(), 1) if "uvi" in df_region else 0.0
 
         c1, c2, c3, c4 = st.columns(4)
         with c1:
@@ -824,12 +867,21 @@ with tab_chart:
             </div>
             """, unsafe_allow_html=True)
 
+        c5, c6 = st.columns([1, 3])
+        with c5:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">☀️ 本週最高紫外線指數</div>
+                <div class="metric-val" style="color: #f97316; font-size: 1.5rem;">UVI {max_week_uvi}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
         st.markdown("<br>", unsafe_allow_html=True)
 
         # Trend Chart Metric Switcher
         chart_metric_opt = st.radio(
             "選擇欲繪製的走勢圖指標 (Select Trend Chart Metric):",
-            options=["氣溫趨勢 (最高溫 / 最低溫)", "相對濕度 (%)", "PM2.5 細懸浮微粒 (μg/m³)", "累積降雨量預測 (mm)", "降雨機率預報 (%)"],
+            options=["氣溫趨勢 (最高溫 / 最低溫)", "相對濕度 (%)", "PM2.5 細懸浮微粒 (μg/m³)", "累積降雨量預測 (mm)", "降雨機率預報 (%)", "紫外線指數 (UVI)"],
             horizontal=True,
             index=0
         )
@@ -935,7 +987,7 @@ with tab_chart:
             ).interactive()
             st.altair_chart(final_chart, use_container_width=True)
 
-        else:
+        elif chart_metric_opt == "降雨機率預報 (%)":
             base_chart = alt.Chart(df_region).encode(
                 x=alt.X("dataDate:N", title="預報日期 (Date)", axis=alt.Axis(labelAngle=0, labelFontWeight="bold")),
                 y=alt.Y("pop:Q", title="降雨機率 (%)", scale=alt.Scale(domain=[0, 100])),
@@ -956,6 +1008,31 @@ with tab_chart:
             ).interactive()
             st.altair_chart(final_chart, use_container_width=True)
 
+        elif chart_metric_opt == "紫外線指數 (UVI)":
+            base_chart = alt.Chart(df_region).encode(
+                x=alt.X("dataDate:N", title="預報日期 (Date)", axis=alt.Axis(labelAngle=0, labelFontWeight="bold")),
+                y=alt.Y("uvi:Q", title="紫外線指數 (UVI)", scale=alt.Scale(domain=[0, max(12, int(df_region['uvi'].max() + 2))])),
+                color=alt.value("#f97316")
+            )
+            lines = base_chart.mark_line(size=3, interpolate="monotone")
+            points = base_chart.mark_circle(size=70)
+            labels = base_chart.mark_text(dy=-12, fontWeight="bold").encode(
+                text=alt.Text("uvi:Q", format=".1f")
+            )
+            # Add danger threshold line at UVI 8
+            threshold = alt.Chart(pd.DataFrame({'y': [8]})).mark_rule(
+                color='#ef4444', strokeDash=[6, 4], strokeWidth=2
+            ).encode(y='y:Q')
+            final_chart = (lines + points + labels + threshold).properties(
+                height=380,
+                title=alt.TitleParams(
+                    text=f"{selected_region} 未來一週紫外線指數 (UVI) 走勢圖",
+                    subtitle="資料來源：中央氣象署 O-A0003-001 即時觀測與天氣情境推估 (紅線 = UVI 8 過量級警戒)",
+                    fontSize=16
+                )
+            ).interactive()
+            st.altair_chart(final_chart, use_container_width=True)
+
         # 顯示完整資料表格 (含 5 大指標)
         st.markdown("#### 📅 一週多元氣象數據表")
         display_df = df_region.copy()
@@ -969,13 +1046,14 @@ with tab_chart:
             "pop": "降雨機率 (%)",
             "rainfall": "降雨量 (mm)",
             "pm25": "PM2.5 (μg/m³)",
+            "uvi": "紫外線指數 (UVI)",
             "weather": "天氣現象 (Wx)"
         })
         
         st.dataframe(
             display_df[[
                 "預報日期 (Date)", "最低溫 (°C)", "最高溫 (°C)", "平均溫 (°C)", "日溫差 (°C)", 
-                "相對濕度 (%)", "降雨機率 (%)", "降雨量 (mm)", "PM2.5 (μg/m³)", "天氣現象 (Wx)"
+                "相對濕度 (%)", "降雨機率 (%)", "降雨量 (mm)", "PM2.5 (μg/m³)", "紫外線指數 (UVI)", "天氣現象 (Wx)"
             ]],
             use_container_width=True,
             hide_index=True
@@ -988,7 +1066,7 @@ with tab_chart:
 # ==============================================================================
 with tab_table:
     st.markdown("### 📋 全臺各地區預報完整資料庫")
-    st.caption("查詢自 SQLite 資料庫 `data.db` 中的 `TemperatureForecasts` 資料表（涵蓋氣溫、濕度、降雨量、降雨機率與 PM2.5）。")
+    st.caption("查詢自 SQLite 資料庫 `data.db` 中的 `TemperatureForecasts` 資料表（涵蓋氣溫、濕度、降雨量、降雨機率、PM2.5 與紫外線指數）。")
 
     all_df = db.query_all_forecasts()
     
@@ -1014,13 +1092,14 @@ with tab_table:
         "pop": "降雨機率 (%)",
         "rainfall": "降雨量 (mm)",
         "pm25": "PM2.5 (μg/m³)",
+        "uvi": "紫外線指數 (UVI)",
         "weather": "天氣現象",
         "created_at": "同步時間"
     }
 
     cols_order = [c for c in [
         "編號 (ID)", "地區名稱 (Region)", "日期 (Date)", "最低溫 (°C)", "最高溫 (°C)", 
-        "相對濕度 (%)", "降雨機率 (%)", "降雨量 (mm)", "PM2.5 (μg/m³)", "天氣現象", "同步時間"
+        "相對濕度 (%)", "降雨機率 (%)", "降雨量 (mm)", "PM2.5 (μg/m³)", "紫外線指數 (UVI)", "天氣現象", "同步時間"
     ] if c in [rename_cols.get(k, k) for k in filtered_df.columns]]
 
     renamed_df = filtered_df.rename(columns=rename_cols)
@@ -1044,7 +1123,7 @@ with tab_table:
 # ==============================================================================
 with tab_ai:
     st.markdown("### 🤖 AI 氣象分析與智慧生活建議")
-    st.caption("Step 22: 結合氣象與環境大數據（氣溫、濕度、PM2.5、降雨量、降雨機率），自動生成個人化生活指南。")
+    st.caption("Step 22: 結合氣象與環境大數據（氣溫、濕度、PM2.5、降雨量、降雨機率、紫外線指數），自動生成個人化生活指南。")
 
     if not df_region.empty:
         today_data = df_region.iloc[0]
@@ -1057,6 +1136,7 @@ with tab_ai:
         today_pop = float(today_data.get("pop", 10.0))
         today_rain = float(today_data.get("rainfall", 0.0))
         today_pm25 = float(today_data.get("pm25", 15.0))
+        today_uvi = float(today_data.get("uvi", 0.0))
 
         # 1. Clothing advice
         clothing_text = ""
@@ -1122,6 +1202,25 @@ with tab_ai:
             hum_text = f"相對濕度偏低（{today_hum}%），空氣較為乾燥，請留意肌膚保濕並多飲水，敏感者可使用加濕器。"
             hum_icon = "🏜️"
 
+        # 5. UV Index advice (紫外線指數防護建議)
+        uv_text = ""
+        uv_icon = "☀️"
+        if today_uvi >= 11.0:
+            uv_text = f"紫外線指數達危險級（UVI {today_uvi}），極短時間即可造成皮膚灼傷。建議避免上午 10 時至下午 2 時外出，外出必須塗抹 SPF50+ 防曬乳、穿著長袖深色衣物、戴寬邊帽與 UV400 太陽眼鏡。"
+            uv_icon = "🔴"
+        elif today_uvi >= 8.0:
+            uv_text = f"紫外線指數過量（UVI {today_uvi}），戶外 15~20 分鐘即可能曬傷。建議塗抹 SPF50 防曬乳，戴帽子與太陽眼鏡，並盡量在有遮蔭處活動，中午前後減少日照暴露。"
+            uv_icon = "🟠"
+        elif today_uvi >= 6.0:
+            uv_text = f"紫外線指數偏高（UVI {today_uvi}），建議外出時塗抹 SPF30 以上防曬乳，配戴太陽眼鏡與帽子，避免長時間直曬。"
+            uv_icon = "🟡"
+        elif today_uvi >= 3.0:
+            uv_text = f"紫外線指數中量（UVI {today_uvi}），一般活動可正常進行，長時間戶外運動建議適當防曬。"
+            uv_icon = "🟢"
+        else:
+            uv_text = f"紫外線指數低（UVI {today_uvi}），紫外線輻射微弱，無需特別防護。"
+            uv_icon = "🟢"
+
         col_ai1, col_ai2 = st.columns(2)
         with col_ai1:
             st.markdown(f"""
@@ -1165,6 +1264,17 @@ with tab_ai:
             </div>
             """, unsafe_allow_html=True)
 
+        # UV Index advice card (full width)
+        st.markdown(f"""
+        <div class="ai-card" style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-color: #fed7aa; margin-bottom: 14px;">
+            <h4 style="margin:0 0 8px 0; color:#9a3412;">{uv_icon} 紫外線指數防護與戶外活動建議</h4>
+            <div style="font-size: 0.92rem; color:#7c2d12; line-height: 1.6;">
+                <b>紫外線指數</b>：UVI {today_uvi}（資料來源：O-A0003-001 即時觀測）<br>
+                {uv_text}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
         st.markdown("<br>", unsafe_allow_html=True)
         st.markdown("#### 💡 未來延伸應用發想 (Step 22)")
         st.markdown("""
@@ -1192,6 +1302,7 @@ CREATE TABLE IF NOT EXISTS TemperatureForecasts (
     pop REAL DEFAULT 0.0,
     rainfall REAL DEFAULT 0.0,
     pm25 REAL DEFAULT 15.0,
+    uvi REAL DEFAULT 0.0,
     weather TEXT DEFAULT '',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(regionName, dataDate) ON CONFLICT REPLACE
@@ -1216,13 +1327,14 @@ CREATE TABLE IF NOT EXISTS TemperatureForecasts (
 
     st.markdown("#### 3. 程式碼品質與架構優化 (Step 20)")
     st.markdown("""
-    - ✅ **實測觀測與歷史資料整合 (O-A0001-001)**：串接中央氣象署全臺 876 個自動氣象站實測資料，完整儲存當日極值與過去歷史觀測紀錄，解決純預報 API 無法調閱過去資料之限制。
+    - ✅ **即時觀測與紫外線指數整合 (O-A0003-001)**：串接中央氣象署全臺自動氣象站即時觀測資料（含紫外線指數 UVIndex），完整儲存當日極值與過去歷史觀測紀錄。
+    - ✅ **精簡雙 API 架構**：僅使用 `F-D0047-091`（22 縣市一週預報）與 `O-A0003-001`（即時觀測含 UV），9 大分區數據由縣市資料聚合產生，降低 API 呼叫次數。
     - ✅ **重複執行不重複插入**：使用 `UNIQUE(regionName, dataDate) ON CONFLICT REPLACE`，無論執行多少次資料同步都不會產生重複垃圾資料，並可隨時間無損累積歷史資料庫。
     - ✅ **錯誤處理機制**：透過 `try-except` 捕獲網路連線超時、SSL 憑證問題與 JSON 解析異常，並具備自動回退機制。
     - ✅ **模組化分工**：
-      - `database.py`：專職負責 SQLite 初始化與資料庫查詢封裝，具備自動 Schema 欄位遷移功能。
-      - `cwa_service.py`：專職負責氣象署 API（O-A0001-001 / F-D0047-091 / F-C0032-003）串接與數據清洗。
-      - `app.py`：專職負責前端 Streamlit 視覺化呈現、Folium 互動地圖與指標切換。
+      - `database.py`：專職負責 SQLite 初始化與資料庫查詢封裝，具備自動 Schema 欄位遷移功能（含 uvi 欄位）。
+      - `cwa_service.py`：專職負責氣象署 API（O-A0003-001 / F-D0047-091）串接與數據清洗。
+      - `app.py`：專職負責前端 Streamlit 視覺化呈現、Folium 互動地圖與 6 大指標切換。
     - ✅ **良好繁體中文註解**：清晰呈現各步驟邏輯，便於代碼維護與學習。
     """)
 
