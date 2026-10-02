@@ -311,7 +311,7 @@ METRICS_CONFIG = {
         "name": "氣溫",
         "label": "🌡️ 氣溫 (°C)",
         "unit": "°C",
-        "field": "avgT",
+        "field": "temp",
         "icon": "🌡️",
         "description": "全臺各縣市平均氣溫分佈與溫層色階",
         "legend_title": "🌡️ 平均氣溫色階：",
@@ -595,6 +595,7 @@ with tab_map:
             loc_name = row["regionName"]
             min_t = float(row.get("minT", 20.0))
             max_t = float(row.get("maxT", 28.0))
+            temp = float(row.get("temp", 25.0))
             avg_t = round((min_t + max_t) / 2.0, 1)
             wx = row.get("weather", "晴時多雲")
             hum = float(row.get("humidity", 70.0))
@@ -602,6 +603,7 @@ with tab_map:
             rain_v = float(row.get("rainfall", 0.0))
             pm_v = float(row.get("pm25", 15.0))
             uvi_v = float(row.get("uvi", 0.0))
+
             
             coord = city_coords.get(loc_name) or region_coords.get(loc_name)
             if not coord:
@@ -617,6 +619,7 @@ with tab_map:
                     "area": coord.get("area", ""),
                     "minT": min_t,
                     "maxT": max_t,
+                    "temp": temp,
                     "avgT": avg_t,
                     "weather": wx,
                     "humidity": hum,
@@ -635,6 +638,7 @@ with tab_map:
                     "area": coord.get("description", ""),
                     "minT": min_t,
                     "maxT": max_t,
+                    "temp": temp,
                     "avgT": avg_t,
                     "weather": wx,
                     "humidity": hum,
@@ -675,6 +679,7 @@ with tab_map:
             name = item["name"]
             min_t = item["minT"]
             max_t = item["maxT"]
+            temp = item["temp"]
             avg_t = item["avgT"]
             wx = item["weather"]
             hum = item["humidity"]
@@ -689,7 +694,7 @@ with tab_map:
             active_label_str = current_cfg["marker_format"](active_val)
 
             # Colors for all individual metrics in popup
-            t_color = get_metric_color(avg_t, "temp")
+            t_color = get_metric_color(temp, "temp")
             h_color = get_metric_color(hum, "humidity")
             pm_color = get_metric_color(pm_v, "pm25")
             r_color = get_metric_color(rain_v, "rainfall")

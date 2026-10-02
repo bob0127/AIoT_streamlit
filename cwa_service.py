@@ -37,28 +37,28 @@ TARGET_CITIES = [
 
 # Baseline environmental and meteorological references for 22 cities
 CITY_METRIC_BASELINES: Dict[str, Dict[str, float]] = {
-    "基隆市": {"pm25": 14.0, "humidity": 82.0, "pop": 20.0, "rainfall": 0.0, "uvi": 5.0},
-    "臺北市": {"pm25": 18.0, "humidity": 68.0, "pop": 20.0, "rainfall": 0.0, "uvi": 6.0},
-    "新北市": {"pm25": 20.0, "humidity": 72.0, "pop": 20.0, "rainfall": 0.0, "uvi": 6.0},
-    "桃園市": {"pm25": 22.0, "humidity": 74.0, "pop": 20.0, "rainfall": 0.0, "uvi": 6.0},
-    "新竹市": {"pm25": 19.0, "humidity": 70.0, "pop": 15.0, "rainfall": 0.0, "uvi": 7.0},
-    "新竹縣": {"pm25": 21.0, "humidity": 73.0, "pop": 15.0, "rainfall": 0.0, "uvi": 7.0},
-    "苗栗縣": {"pm25": 25.0, "humidity": 71.0, "pop": 10.0, "rainfall": 0.0, "uvi": 7.0},
-    "臺中市": {"pm25": 32.0, "humidity": 65.0, "pop": 10.0, "rainfall": 0.0, "uvi": 8.0},
-    "彰化縣": {"pm25": 34.0, "humidity": 69.0, "pop": 10.0, "rainfall": 0.0, "uvi": 8.0},
-    "南投縣": {"pm25": 26.0, "humidity": 78.0, "pop": 25.0, "rainfall": 0.0, "uvi": 7.0},
-    "雲林縣": {"pm25": 38.0, "humidity": 71.0, "pop": 15.0, "rainfall": 0.0, "uvi": 8.0},
-    "嘉義市": {"pm25": 36.0, "humidity": 66.0, "pop": 10.0, "rainfall": 0.0, "uvi": 9.0},
-    "嘉義縣": {"pm25": 37.0, "humidity": 69.0, "pop": 15.0, "rainfall": 0.0, "uvi": 9.0},
-    "臺南市": {"pm25": 42.0, "humidity": 67.0, "pop": 10.0, "rainfall": 0.0, "uvi": 9.0},
-    "高雄市": {"pm25": 46.0, "humidity": 64.0, "pop": 10.0, "rainfall": 0.0, "uvi": 10.0},
-    "屏東縣": {"pm25": 44.0, "humidity": 70.0, "pop": 15.0, "rainfall": 0.0, "uvi": 10.0},
-    "宜蘭縣": {"pm25": 11.0, "humidity": 85.0, "pop": 30.0, "rainfall": 0.0, "uvi": 6.0},
-    "花蓮縣": {"pm25": 10.0, "humidity": 80.0, "pop": 25.0, "rainfall": 0.0, "uvi": 8.0},
-    "臺東縣": {"pm25": 12.0, "humidity": 76.0, "pop": 20.0, "rainfall": 0.0, "uvi": 9.0},
-    "澎湖縣": {"pm25": 16.0, "humidity": 75.0, "pop": 10.0, "rainfall": 0.0, "uvi": 10.0},
-    "金門縣": {"pm25": 28.0, "humidity": 74.0, "pop": 10.0, "rainfall": 0.0, "uvi": 7.0},
-    "連江縣": {"pm25": 15.0, "humidity": 86.0, "pop": 20.0, "rainfall": 0.0, "uvi": 5.0},
+    "基隆市": {"pm25": 14.0, "humidity": 82.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
+    "臺北市": {"pm25": 18.0, "humidity": 68.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
+    "新北市": {"pm25": 20.0, "humidity": 72.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
+    "桃園市": {"pm25": 22.0, "humidity": 74.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
+    "新竹市": {"pm25": 19.0, "humidity": 70.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0},
+    "新竹縣": {"pm25": 21.0, "humidity": 73.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0},
+    "苗栗縣": {"pm25": 25.0, "humidity": 71.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
+    "臺中市": {"pm25": 32.0, "humidity": 65.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
+    "彰化縣": {"pm25": 34.0, "humidity": 69.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
+    "南投縣": {"pm25": 26.0, "humidity": 78.0, "pop": 25.0, "rainfall": 0.0, "uvi": 0.0},
+    "雲林縣": {"pm25": 38.0, "humidity": 71.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0},
+    "嘉義市": {"pm25": 36.0, "humidity": 66.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
+    "嘉義縣": {"pm25": 37.0, "humidity": 69.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0},
+    "臺南市": {"pm25": 42.0, "humidity": 67.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
+    "高雄市": {"pm25": 46.0, "humidity": 64.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
+    "屏東縣": {"pm25": 44.0, "humidity": 70.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0},
+    "宜蘭縣": {"pm25": 11.0, "humidity": 85.0, "pop": 30.0, "rainfall": 0.0, "uvi": 0.0},
+    "花蓮縣": {"pm25": 10.0, "humidity": 80.0, "pop": 25.0, "rainfall": 0.0, "uvi": 0.0},
+    "臺東縣": {"pm25": 12.0, "humidity": 76.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
+    "澎湖縣": {"pm25": 16.0, "humidity": 75.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
+    "金門縣": {"pm25": 28.0, "humidity": 74.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
+    "連江縣": {"pm25": 15.0, "humidity": 86.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
 }
 
 # Geographic coordinates for every city (Step 17 & 18 enhanced)
@@ -202,7 +202,7 @@ def fetch_cwa_live_observations(api_key: str = DEFAULT_API_KEY) -> Dict[str, Dic
       - uvi: 紫外線指數 (UV Index) — 即時觀測值
     Returns mapping: { "臺北市": {"rainfall": 0.0, "humidity": 85.3, ..., "uvi": 6.0}, ... }
     """
-    url = f"https://opendata.cwa.gov.tw/api/v1/rest/datastore/{DATASET_ID_OBSERVATIONS}?Authorization={api_key}&limit=1000"
+    url = f"https://opendata.cwa.gov.tw/api/v1/rest/datastore/{DATASET_ID_OBSERVATIONS}?Authorization={api_key}"
     obs_map: Dict[str, Dict[str, Any]] = {}
     try:
         resp = requests.get(url, timeout=15, verify=False)
@@ -272,7 +272,7 @@ def fetch_cwa_live_observations(api_key: str = DEFAULT_API_KEY) -> Dict[str, Dic
                 max_t = round(sum(highs)/len(highs), 1) if highs else round(avg_t + 3.0, 1)
                 min_t = round(sum(lows)/len(lows), 1) if lows else round(avg_t - 3.0, 1)
                 wx = weathers[0] if weathers else "多雲"
-                avg_uvi = round(max(uvis), 1) if uvis else None  # 取該縣市測站中 UV 最大值
+                avg_uvi = round(sum(uvis)/len(uvis), 1) if uvis else None  # 取該縣市測站中 UV 平均值
 
                 obs_map[county] = {
                     "temp": avg_t,
@@ -302,7 +302,7 @@ def build_historical_records(live_obs: Dict[str, Dict[str, Any]], days_back: int
 
         for city in TARGET_CITIES:
             obs = live_obs.get(city, {})
-            base = CITY_METRIC_BASELINES.get(city, {"pm25": 20.0, "humidity": 70.0, "pop": 20.0, "rainfall": 0.0, "uvi": 6.0})
+            base = CITY_METRIC_BASELINES.get(city, {"pm25": 20.0, "humidity": 70.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0})
             
             # Base values from O-A0003-001 with realistic slight natural day-to-day variance
             cur_min = obs.get("minT", 23.0)
@@ -490,7 +490,7 @@ def parse_cities_weather_json(raw_data: Dict[str, Any], live_obs: Optional[Dict[
                     pass
 
         city_baseline = CITY_METRIC_BASELINES.get(city_name, {
-            "pm25": 20.0, "humidity": 72.0, "pop": 20.0, "rainfall": 0.0, "uvi": 6.0
+            "pm25": 20.0, "humidity": 72.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0
         })
         city_obs = live_obs.get(city_name, {})
         today_str = datetime.now().strftime("%Y-%m-%d")
@@ -498,7 +498,9 @@ def parse_cities_weather_json(raw_data: Dict[str, Any], live_obs: Optional[Dict[
         for dt, v in sorted(by_date.items()):
             if v["maxT"] > -900 and v["minT"] < 900:
                 wx_str = "、".join(v["wx"][:2]) if v["wx"] else "晴時多雲"
+
                 
+
                 # Humidity
                 if v["rh"]:
                     daily_humidity = round(sum(v["rh"]) / len(v["rh"]), 1)
@@ -546,18 +548,7 @@ def parse_cities_weather_json(raw_data: Dict[str, Any], live_obs: Optional[Dict[
                 if dt == today_str and city_obs.get("uvi") is not None:
                     daily_uvi = float(city_obs["uvi"])
                 else:
-                    base_uvi = float(city_baseline.get("uvi", 6.0))
-                    if any(k in wx_str for k in ["豪雨", "大雨", "雷雨"]):
-                        daily_uvi = round(max(0.0, base_uvi * 0.2), 1)
-                    elif any(k in wx_str for k in ["陣雨", "短暫雨", "雨"]):
-                        daily_uvi = round(max(0.0, base_uvi * 0.4), 1)
-                    elif "陰" in wx_str:
-                        daily_uvi = round(max(0.0, base_uvi * 0.5), 1)
-                    elif "多雲" in wx_str:
-                        daily_uvi = round(base_uvi * 0.7, 1)
-                    else:
-                        # 晴天 — full UV
-                        daily_uvi = base_uvi
+                    daily_uvi = float(city_baseline.get("uvi", 0.0))
 
                 # Use actual O-A0003-001 station observation for today when available
                 if dt == today_str and city_obs:
@@ -565,16 +556,24 @@ def parse_cities_weather_json(raw_data: Dict[str, Any], live_obs: Optional[Dict[
                     max_t_val = float(city_obs.get("maxT", v["maxT"]))
                     max_t_val = max(max_t_val, min_t_val + 1.0)
                     wx_final = city_obs.get("weather") or wx_str
+
+                    if city_obs.get("temp") is not None:
+                        daily_temp = float(city_obs["temp"])
+                    else:
+                        daily_temp = round((min_t_val + max_t_val) / 2.0, 1)
                 else:
                     min_t_val = float(v["minT"])
                     max_t_val = float(v["maxT"])
                     wx_final = wx_str
+
+                    daily_temp = round((min_t_val + max_t_val) / 2.0, 1)
 
                 records.append({
                     "regionName": city_name,
                     "dataDate": dt,
                     "minT": min_t_val,
                     "maxT": max_t_val,
+                    "temp": daily_temp,
                     "weather": wx_final,
                     "humidity": daily_humidity,
                     "pop": daily_pop,
@@ -582,6 +581,9 @@ def parse_cities_weather_json(raw_data: Dict[str, Any], live_obs: Optional[Dict[
                     "pm25": daily_pm25,
                     "uvi": daily_uvi
                 })
+
+        for rec in records:
+            print(f"City: {rec['regionName']}, temp: {rec['temp']}, dataDate: {rec['dataDate']}")
                 
     return records
 
@@ -609,6 +611,7 @@ def aggregate_regions_from_cities(cities_records: List[Dict[str, Any]]) -> List[
                     "dataDate": data_date,
                     "minT": round(sum(m["minT"] for m in matched) / len(matched), 1),
                     "maxT": round(sum(m["maxT"] for m in matched) / len(matched), 1),
+                    "temp": round(sum(m["temp"] for m in matched) / len(matched), 1),
                     "weather": matched[0]["weather"],
                     "humidity": round(sum(m["humidity"] for m in matched) / len(matched), 1),
                     "pop": round(max(m["pop"] for m in matched), 1),
@@ -656,7 +659,7 @@ def fetch_and_sync_weather(api_key: str = DEFAULT_API_KEY) -> pd.DataFrame:
         all_records.extend(regions_records)
     except Exception as e:
         print(f"Warning: Failed to aggregate regional data: {e}")
-        
+    
     df = pd.DataFrame(all_records)
     if not df.empty:
         save_forecasts(all_records)
