@@ -1128,8 +1128,10 @@ with tab_ai:
     st.markdown("### 🤖 AI 氣象分析與智慧生活建議")
     st.caption("Step 22: 結合氣象與環境大數據（氣溫、濕度、PM2.5、降雨量、降雨機率、紫外線指數），自動生成個人化生活指南。")
 
-    if not df_region.empty:
-        today_data = df_region.iloc[0]
+    region_data = date_df[date_df["regionName"] == selected_region]
+    print(region_data)
+    if not region_data.empty:
+        today_data = region_data.iloc[0]
         today_date = today_data["dataDate"]
         today_min = float(today_data["minT"])
         today_max = float(today_data["maxT"])
