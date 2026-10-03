@@ -294,11 +294,10 @@ def fetch_cwa_live_observations(api_key: str = DEFAULT_API_KEY) -> Dict[str, Dic
             data = resp.json()
             if not isinstance(data, list) or len(data) == 0:
                 raise Exception('API 傳輸成功(HTTP 200)，但資料內容空白或結構不符')
-            #now = datetime.now().replace(minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:00")
-            prev_hour_str = (datetime.now() - timedelta(hours=1)).strftime("%Y-%m-%d %H:00")
+            now = data[0].get("datacreationdate")
             pm25_list = defaultdict(list)
             for d in data:
-                if d.get("datacreationdate") == prev_hour_str:
+                if d.get("datacreationdate") == now:
                     county = d.get("county", "").replace("台", '臺')
                     pm25 = float(d.get("pm25", 0))
                     pm25_list[county].append(pm25)
