@@ -842,7 +842,7 @@ with tab_chart:
         max_week_pop = int(round(df_region["pop"].max())) if "pop" in df_region else 20
         max_week_uvi = round(df_region["uvi"].max(), 1) if "uvi" in df_region else 0.0
 
-        c1, c2, c3, c4 = st.columns(4)
+        c1, c2, c3, c4, c5= st.columns(5)
         with c1:
             st.markdown(f"""
             <div class="metric-card">
@@ -871,8 +871,6 @@ with tab_chart:
                 <div class="metric-val" style="color: #3b82f6; font-size: 1.5rem;">{max_week_rain}mm / {max_week_pop}%</div>
             </div>
             """, unsafe_allow_html=True)
-
-        c5, c6 = st.columns([1, 3])
         with c5:
             st.markdown(f"""
             <div class="metric-card">

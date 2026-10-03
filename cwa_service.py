@@ -22,6 +22,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Step 3: API Key & Endpoint Configuration
 DEFAULT_API_KEY = "CWA-55FDA6D3-A43C-4AE0-BB30-E62D5F684FB2"
+DEFAULT_PM25_KEY = "46effe84-6d88-4821-8860-21cfaefc33db"
 DATASET_ID_CITIES = "F-D0047-091"        # 臺灣各鄉鎮市區預報資料-臺灣各鄉鎮市區未來3天(逐3小時)及未來1週天氣預報
 DATASET_ID_OBSERVATIONS = "O-A0003-001"  # 臺灣各自動氣象站氣象觀測資料 (含紫外線指數 UVIndex)
 
@@ -37,28 +38,28 @@ TARGET_CITIES = [
 
 # Baseline environmental and meteorological references for 22 cities
 CITY_METRIC_BASELINES: Dict[str, Dict[str, float]] = {
-    "基隆市": {"pm25": 14.0, "humidity": 82.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
-    "臺北市": {"pm25": 18.0, "humidity": 68.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
-    "新北市": {"pm25": 20.0, "humidity": 72.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
-    "桃園市": {"pm25": 22.0, "humidity": 74.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
-    "新竹市": {"pm25": 19.0, "humidity": 70.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0},
-    "新竹縣": {"pm25": 21.0, "humidity": 73.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0},
-    "苗栗縣": {"pm25": 25.0, "humidity": 71.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
-    "臺中市": {"pm25": 32.0, "humidity": 65.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
-    "彰化縣": {"pm25": 34.0, "humidity": 69.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
-    "南投縣": {"pm25": 26.0, "humidity": 78.0, "pop": 25.0, "rainfall": 0.0, "uvi": 0.0},
-    "雲林縣": {"pm25": 38.0, "humidity": 71.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0},
-    "嘉義市": {"pm25": 36.0, "humidity": 66.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
-    "嘉義縣": {"pm25": 37.0, "humidity": 69.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0},
-    "臺南市": {"pm25": 42.0, "humidity": 67.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
-    "高雄市": {"pm25": 46.0, "humidity": 64.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
-    "屏東縣": {"pm25": 44.0, "humidity": 70.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0},
-    "宜蘭縣": {"pm25": 11.0, "humidity": 85.0, "pop": 30.0, "rainfall": 0.0, "uvi": 0.0},
-    "花蓮縣": {"pm25": 10.0, "humidity": 80.0, "pop": 25.0, "rainfall": 0.0, "uvi": 0.0},
-    "臺東縣": {"pm25": 12.0, "humidity": 76.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
-    "澎湖縣": {"pm25": 16.0, "humidity": 75.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
-    "金門縣": {"pm25": 28.0, "humidity": 74.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0},
-    "連江縣": {"pm25": 15.0, "humidity": 86.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0},
+    "基隆市": {"pm25": 14.0, "humidity": 82.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0, "pm25":12},
+    "臺北市": {"pm25": 18.0, "humidity": 68.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0, "pm25":12},
+    "新北市": {"pm25": 20.0, "humidity": 72.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0, "pm25":12},
+    "桃園市": {"pm25": 22.0, "humidity": 74.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0, "pm25":12},
+    "新竹市": {"pm25": 19.0, "humidity": 70.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0, "pm25":12},
+    "新竹縣": {"pm25": 21.0, "humidity": 73.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0, "pm25":12},
+    "苗栗縣": {"pm25": 25.0, "humidity": 71.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0, "pm25":12},
+    "臺中市": {"pm25": 32.0, "humidity": 65.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0, "pm25":15},
+    "彰化縣": {"pm25": 34.0, "humidity": 69.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0, "pm25":15},
+    "南投縣": {"pm25": 26.0, "humidity": 78.0, "pop": 25.0, "rainfall": 0.0, "uvi": 0.0, "pm25":15},
+    "雲林縣": {"pm25": 38.0, "humidity": 71.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0, "pm25":15},
+    "嘉義市": {"pm25": 36.0, "humidity": 66.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0, "pm25":15},
+    "嘉義縣": {"pm25": 37.0, "humidity": 69.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0, "pm25":15},
+    "臺南市": {"pm25": 42.0, "humidity": 67.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0, "pm25":18},
+    "高雄市": {"pm25": 46.0, "humidity": 64.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0, "pm25":18},
+    "屏東縣": {"pm25": 44.0, "humidity": 70.0, "pop": 15.0, "rainfall": 0.0, "uvi": 0.0, "pm25":18},
+    "宜蘭縣": {"pm25": 11.0, "humidity": 85.0, "pop": 30.0, "rainfall": 0.0, "uvi": 0.0, "pm25":12},
+    "花蓮縣": {"pm25": 10.0, "humidity": 80.0, "pop": 25.0, "rainfall": 0.0, "uvi": 0.0, "pm25":8},
+    "臺東縣": {"pm25": 12.0, "humidity": 76.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0, "pm25":8},
+    "澎湖縣": {"pm25": 16.0, "humidity": 75.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0, "pm25":18},
+    "金門縣": {"pm25": 28.0, "humidity": 74.0, "pop": 10.0, "rainfall": 0.0, "uvi": 0.0, "pm25":18},
+    "連江縣": {"pm25": 15.0, "humidity": 86.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0, "pm25":18},
 }
 
 # Geographic coordinates for every city (Step 17 & 18 enhanced)
@@ -285,6 +286,29 @@ def fetch_cwa_live_observations(api_key: str = DEFAULT_API_KEY) -> Dict[str, Dic
                 }
     except Exception as e:
         print(f"Warning: Live observation fetch from {DATASET_ID_OBSERVATIONS} skipped: {e}")
+
+    url = f"https://data.moenv.gov.tw/api/v2/aqx_p_02?format=json&offset=0&api_key={DEFAULT_PM25_KEY}"
+    try:
+        resp = requests.get(url, timeout=15, verify=False)
+        if resp.status_code == 200:
+            data = resp.json()
+            if not isinstance(data, list) or len(data) == 0:
+                raise Exception('API 傳輸成功(HTTP 200)，但資料內容空白或結構不符')
+            #now = datetime.now().replace(minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:00")
+            prev_hour_str = (datetime.now() - timedelta(hours=1)).strftime("%Y-%m-%d %H:00")
+            pm25_list = defaultdict(list)
+            for d in data:
+                if d.get("datacreationdate") == prev_hour_str:
+                    county = d.get("county", "").replace("台", '臺')
+                    pm25 = float(d.get("pm25", 0))
+                    pm25_list[county].append(pm25)
+                    
+            for county, val_list in pm25_list.items():
+                avg_val = round(sum(val_list) / len(val_list), 1)
+                obs_map[county]["pm25"] = avg_val  # 填補 PM2.5
+    except Exception as e:
+        print(f"Warning: PM2.5 fetch from {url} skipped: {e}")
+        
     return obs_map
 
 def build_historical_records(live_obs: Dict[str, Dict[str, Any]], days_back: int = 3) -> List[Dict[str, Any]]:
@@ -302,7 +326,7 @@ def build_historical_records(live_obs: Dict[str, Dict[str, Any]], days_back: int
 
         for city in TARGET_CITIES:
             obs = live_obs.get(city, {})
-            base = CITY_METRIC_BASELINES.get(city, {"pm25": 20.0, "humidity": 70.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0})
+            base = CITY_METRIC_BASELINES.get(city, {"pm25": 20.0, "humidity": 70.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0, "pm25":12})
             
             # Base values from O-A0003-001 with realistic slight natural day-to-day variance
             cur_min = obs.get("minT", 23.0)
@@ -311,6 +335,7 @@ def build_historical_records(live_obs: Dict[str, Dict[str, Any]], days_back: int
             cur_rain = obs.get("rainfall", base["rainfall"])
             cur_wx = obs.get("weather", "多雲時晴")
             cur_uvi = obs.get("uvi") if obs.get("uvi") is not None else base.get("uvi", 6.0)
+            cur_pm25 = obs.get("pm25", base["pm25"])
             
             # Slight natural offset for past dates
             offset_t = -0.6 if day_offset == 1 else (0.8 if day_offset == 2 else -0.3)
@@ -321,7 +346,7 @@ def build_historical_records(live_obs: Dict[str, Dict[str, Any]], days_back: int
             p_hum = round(min(98.0, max(40.0, cur_hum + offset_h)), 1)
             p_rain = round(max(0.0, cur_rain * (0.8 if day_offset == 1 else 0.5)), 1)
             p_pop = round(min(100.0, max(0.0, (25.0 if p_rain > 0 else 10.0) + (p_hum - 70.0) * 0.3)), 0)
-            p_pm25 = round(max(5.0, base["pm25"] * (0.9 if p_rain > 0 else 1.05)), 1)
+            p_pm25 = round(max(5.0, cur_pm25 * (0.9 if p_rain > 0 else 1.05)), 1)
             # UV varies slightly by day offset and weather
             uvi_offset = -0.5 if day_offset == 1 else (0.3 if day_offset == 2 else -0.2)
             p_uvi = round(max(0.0, min(15.0, cur_uvi + uvi_offset)), 1)
@@ -395,15 +420,18 @@ def parse_cities_weather_json(raw_data: Dict[str, Any], live_obs: Optional[Dict[
         wx_times = elem_map.get("天氣現象") or elem_map.get("Wx", [])
         rh_times = elem_map.get("平均相對濕度") or elem_map.get("RH", [])
         pop_times = elem_map.get("12小時降雨機率") or elem_map.get("PoP12h") or elem_map.get("PoP", [])
+        uvi_times = elem_map.get("紫外線指數") or elem_map.get("UVI", [])
         
         by_date = defaultdict(lambda: {
             "maxT": -999.0, 
-            "minT": 999.0, 
+            "minT": 999.0,
             "wx": [],
             "rh": [],
-            "pop": []
+            "pop": [],
+            "uvi": [],
+            "pm25": []
         })
-        
+
         for t_elem in max_times:
             st_iso = t_elem.get("StartTime") or t_elem.get("startTime", "")
             data_date = st_iso[:10] if len(st_iso) >= 10 else ""
@@ -489,8 +517,25 @@ def parse_cities_weather_json(raw_data: Dict[str, Any], live_obs: Optional[Dict[
                 except ValueError:
                     pass
 
+        for u_elem in uvi_times:
+            st_iso = u_elem.get("StartTime") or u_elem.get("startTime", "")
+            data_date = st_iso[:10] if len(st_iso) >= 10 else ""
+            if not data_date:
+                continue
+            uvi_val = None
+            if "ElementValue" in u_elem:
+                uvi_val = u_elem["ElementValue"].get("UVIndex")
+            elif "parameter" in u_elem:
+                uvi_val = u_elem["parameter"].get("parameterName")
+            if uvi_val is not None:
+                try:
+                    f_uvi = float(uvi_val)
+                    if 0 <= f_uvi <= 100:
+                        by_date[data_date]["uvi"].append(f_uvi)
+                except ValueError:
+                    pass
         city_baseline = CITY_METRIC_BASELINES.get(city_name, {
-            "pm25": 20.0, "humidity": 72.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0
+            "pm25": 20.0, "humidity": 72.0, "pop": 20.0, "rainfall": 0.0, "uvi": 0.0, "pm25":12
         })
         city_obs = live_obs.get(city_name, {})
         today_str = datetime.now().strftime("%Y-%m-%d")
@@ -499,18 +544,24 @@ def parse_cities_weather_json(raw_data: Dict[str, Any], live_obs: Optional[Dict[
             if v["maxT"] > -900 and v["minT"] < 900:
                 wx_str = "、".join(v["wx"][:2]) if v["wx"] else "晴時多雲"
 
-                
+                # Temp
+                if dt == today_str and city_obs.get("temp") is not None:
+                    daily_temp = float(city_obs["temp"])
+                else:
+                    daily_temp = round((v["minT"] + v["maxT"]) / 2.0, 1)
 
                 # Humidity
-                if v["rh"]:
-                    daily_humidity = round(sum(v["rh"]) / len(v["rh"]), 1)
-                elif dt == today_str and city_obs.get("humidity") is not None:
+                if dt == today_str and city_obs.get("humidity") is not None:
                     daily_humidity = float(city_obs["humidity"])
+                elif v["rh"]:
+                    daily_humidity = round(sum(v["rh"]) / len(v["rh"]), 1)
                 else:
                     daily_humidity = float(city_baseline["humidity"])
                     
                 # PoP
-                if v["pop"]:
+                if dt == today_str and city_obs.get("pop") is not None:
+                    daily_pop = float(city_obs["pop"])
+                elif v["pop"]:
                     daily_pop = round(max(v["pop"]), 1)
                 else:
                     daily_pop = float(city_baseline["pop"])
@@ -533,20 +584,27 @@ def parse_cities_weather_json(raw_data: Dict[str, Any], live_obs: Optional[Dict[
                 daily_rainfall = max(0.0, daily_rainfall)
                         
                 # PM2.5 (Standard environmental scale with rain scrubbing factor)
-                base_pm = float(city_baseline["pm25"])
-                if daily_rainfall >= 5.0:
-                    daily_pm25 = max(5.0, round(base_pm * 0.55, 1))
-                elif daily_rainfall > 0.0:
-                    daily_pm25 = max(8.0, round(base_pm * 0.8, 1))
-                elif "晴" in wx_str and daily_pop <= 15:
-                    daily_pm25 = round(base_pm * 1.05, 1)
+                if dt == today_str and city_obs.get("pm25") is not None:
+                    daily_pm25 = float(city_obs["pm25"])
+                elif v["pm25"]:
+                    daily_pm25 = round(sum(v["pm25"]) / len(v["pm25"]), 1)
                 else:
-                    daily_pm25 = base_pm
+                    base_pm = float(city_baseline["pm25"])
+                    if daily_rainfall >= 5.0:
+                        daily_pm25 = max(5.0, round(base_pm * 0.55, 1))
+                    elif daily_rainfall > 0.0:
+                        daily_pm25 = max(8.0, round(base_pm * 0.8, 1))
+                    elif "晴" in wx_str and daily_pop <= 15:
+                        daily_pm25 = round(base_pm * 1.05, 1)
+                    else:
+                        daily_pm25 = base_pm
 
                 # UV Index (紫外線指數)
                 # Today: use real-time O-A0003-001 data; future: estimate from weather
                 if dt == today_str and city_obs.get("uvi") is not None:
                     daily_uvi = float(city_obs["uvi"])
+                elif v["uvi"]:
+                    daily_uvi = round(sum(v["uvi"]) / len(v["uvi"]), 1)
                 else:
                     daily_uvi = float(city_baseline.get("uvi", 0.0))
 
@@ -556,17 +614,10 @@ def parse_cities_weather_json(raw_data: Dict[str, Any], live_obs: Optional[Dict[
                     max_t_val = float(city_obs.get("maxT", v["maxT"]))
                     max_t_val = max(max_t_val, min_t_val + 1.0)
                     wx_final = city_obs.get("weather") or wx_str
-
-                    if city_obs.get("temp") is not None:
-                        daily_temp = float(city_obs["temp"])
-                    else:
-                        daily_temp = round((min_t_val + max_t_val) / 2.0, 1)
                 else:
                     min_t_val = float(v["minT"])
                     max_t_val = float(v["maxT"])
                     wx_final = wx_str
-
-                    daily_temp = round((min_t_val + max_t_val) / 2.0, 1)
 
                 records.append({
                     "regionName": city_name,
@@ -581,10 +632,6 @@ def parse_cities_weather_json(raw_data: Dict[str, Any], live_obs: Optional[Dict[
                     "pm25": daily_pm25,
                     "uvi": daily_uvi
                 })
-
-        for rec in records:
-            print(f"City: {rec['regionName']}, temp: {rec['temp']}, dataDate: {rec['dataDate']}")
-                
     return records
 
 def aggregate_regions_from_cities(cities_records: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
